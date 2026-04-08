@@ -14,7 +14,7 @@ sudo podman build -t httpd:latest -f Containerfile .
 sudo podman images 
 
 # Run container from custome image 
-sudo podman run -itd -p 8002:80 httpd:latest
+sudo podman run -itd -p 8003:80 httpd:latest
 
 # Verify Container 
 sudo podman ps -a 
