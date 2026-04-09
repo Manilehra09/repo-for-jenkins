@@ -1,20 +1,26 @@
-# Create a container file
-cat <<EQF > Containerfile
+#!/bin/bash
+set -e  # This tells the script to exit immediately if any command fails
+# 1. Create a container file
+cat <<EOF > Containerfile
 FROM docker.io/amazonlinux:latest
 RUN yum install httpd -y 
-RUN echo "This webserver is craeted using jenkins" >> /var/www/html/index.html
+RUN echo "This webserver is created using jenkins" >> /var/www/html/index.html
 EXPOSE 80
-CMD "/usr/sbin/httpd" -D "FOREGROUND"
-EQF
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+EOF
 
-# Build a container image from file 
+# 2. Build the image
+# Using sudo if required, or just podman if permissions are set
 sudo podman build -t httpd:latest -f Containerfile .
 
-# Verify the image 
-sudo podman images 
+# 3. CLEANUP: Remove old container if it exists
+echo "Cleaning up old containers..."
+sudo podman stop lms-webserver || true
+sudo podman rm lms-webserver || true
 
-# Run container from custome image 
-sudo podman run -itd -p 8003:80 httpd:latest
+# 4. Run new container
+echo "Starting new container..."
+sudo podman run -d --name lms-webserver -p 8003:80 httpd:latest
 
-# Verify Container 
-sudo podman ps -a 
+# 5. Verify
+sudo podman ps -a
