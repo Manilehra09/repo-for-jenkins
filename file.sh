@@ -12,23 +12,17 @@ EOF
 
 # 2. Build the image
 # Using sudo if required, or just podman if permissions are set
-sudo podman build -t lms:latest -f Containerfile .
+sudo docker build -t lms:latest -f Containerfile .
 
 # 3. CLEANUP: Remove old container if it exists
 echo "Cleaning up old containers..."
-sudo podman stop lms-webserver || true
-sudo podman rm lms-webserver || true
+sudo docker stop lms-webserver || true
+sudo docker rm lms-webserver || true
 
 # 4. Run new container
 echo "Starting new container..."
-sudo podman run -d --name lms-webserver -p 8003:80 lms:latest
+sudo docker run -d --name lms-webserver -p 8003:80 lms:latest
 
 # 5. Verify
-sudo podman ps -a
+sudo docker ps -a
 
-
-
-echo "FILE UPDATED"
-
-
-echo " File is executed by the Jenkins pipeline."
